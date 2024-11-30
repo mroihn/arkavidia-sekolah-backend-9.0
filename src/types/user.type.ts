@@ -41,3 +41,11 @@ export const PostUserBodySchema = createInsertSchema(user).omit({
     createdAt: true,
     updatedAt: true,
 });
+
+export const PutUserBodySchema = createInsertSchema(user)
+    .omit({
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+    })
+    .partial();

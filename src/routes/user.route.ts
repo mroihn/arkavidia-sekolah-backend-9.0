@@ -4,7 +4,8 @@ import {
     UserSchema,
     IdUserPathSchema,
     ListUserSchema,
-    PostUserBodySchema
+    PostUserBodySchema,
+    PutUserBodySchema
 } from '../types/user.type';
 import { createErrorResponse } from '../utils/error-response-factory';
 
@@ -74,6 +75,35 @@ export const postUserRoute = createRoute({
                 },
             },
             description: 'Creates new user',
+        },
+        400: createErrorResponse('UNION', 'Bad request error'),
+        500: createErrorResponse('GENERIC', 'Internal server error'),
+    },
+});
+
+export const putUserRoute = createRoute({
+    operationId: 'putUser',
+    tags: ['user'],
+    method: 'put',
+    path: '/user/{id}',
+    request: {
+        params: IdUserPathSchema,
+        body: {
+            content: {
+                'application/json': {
+                    schema: PutUserBodySchema,
+                },
+            },
+        },
+    },
+    responses: {
+        201: {
+            content: {
+                'application/json': {
+                    schema: UserSchema,
+                },
+            },
+            description: 'Updates user with id',
         },
         400: createErrorResponse('UNION', 'Bad request error'),
         500: createErrorResponse('GENERIC', 'Internal server error'),
