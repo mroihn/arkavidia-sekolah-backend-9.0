@@ -12,9 +12,8 @@ userRouter.openapi(getUserRoute, async (c) => {
 });
 
 userRouter.openapi(postUserRoute, async (c) => {
-    const body = c.req.valid('json');
-    const { name, age } = body;
-    const newTodo = await insertUser(db, name, age)
+    const data = c.req.valid('json');
+    const newTodo = await insertUser(db, data)
     return c.json(newTodo, 201);
 });
 

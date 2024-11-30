@@ -1,19 +1,16 @@
 import { eq } from 'drizzle-orm';
 import type { Database } from '../db/drizzle';
 import { user } from '../db/schema/user.schema';
-import type { PutUserBodySchema } from '../types/user.type'
+import type { PostUserBodySchema, PutUserBodySchema } from '../types/user.type'
 import type { z } from 'zod';
 
 export const getUserById = async (db: Database, id: string) => {
     return await db.select().from(user).where(eq(user.id, id));
 };
 
-export const insertUser = async (db: Database, name: string, age: number | undefined) => {
+export const insertUser = async (db: Database, data: z.infer<typeof PostUserBodySchema>) => {
     const [insertedUser] = await db.insert(user).values({
-        name,
-        age,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        ...data
     }).returning();
     return insertedUser;
 };

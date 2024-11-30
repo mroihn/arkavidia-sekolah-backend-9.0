@@ -12,9 +12,8 @@ todoRouter.openapi(getTodoRoute, async (c) => {
 });
 
 todoRouter.openapi(postTodoRoute, async (c) => {
-	const body = c.req.valid('json');
-	const { authorId, name, description } = body;
-	const newTodo = await insertTodo(db, authorId, name, description)
+	const data = c.req.valid('json');
+	const newTodo = await insertTodo(db, data)
 	return c.json(newTodo, 201);
 });
 
