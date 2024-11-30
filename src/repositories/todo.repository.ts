@@ -24,3 +24,11 @@ export const updateTodo = async (db: Database, data: z.infer<typeof PutTodoBodyS
 		.returning();
 	return updatedTodo;
 };
+
+export async function deleteTodo(db: Database, todoId: string) {
+	const deletedTodo = await db
+		.delete(todo)
+		.where(eq(todo.id, todoId))
+		.returning();
+	return deletedTodo;
+}

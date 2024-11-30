@@ -24,3 +24,11 @@ export const updateUser = async (db: Database, data: z.infer<typeof PutUserBodyS
         .returning();
     return updatedUser;
 };
+
+export async function deleteUser(db: Database, userId: string) {
+    const deletedUser = await db
+        .delete(user)
+        .where(eq(user.id, userId))
+        .returning();
+    return deletedUser;
+}

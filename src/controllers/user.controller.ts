@@ -1,14 +1,16 @@
 import { db } from '../db/drizzle';
-import { getUserById, insertUser, updateUser } from '../repositories/user.repository';
-import { getUserRoute, postUserRoute, putUserRoute } from "../routes/user.route";
+import { getUserById, insertUser, updateUser, deleteUser } from '../repositories/user.repository';
+import { getUserRoute, postUserRoute, putUserRoute, deleteUserRoute } from "../routes/user.route";
 import { createRouter } from '../utils/router-factory';
 
 export const userRouter = createRouter();
 
 userRouter.openapi(getUserRoute, async (c) => {
     const { id } = c.req.valid('param');
-    const todo = await getUserById(db, id);
-    return c.json(todo, 200);
+    const user = await getUserById(db, id);
+    if (user.length === 0)
+        return c.json({ error: 'User not found' }, 404);
+    return c.json(user, 200);
 });
 
 userRouter.openapi(postUserRoute, async (c) => {
@@ -23,5 +25,14 @@ userRouter.openapi(putUserRoute, async (c) => {
     const user = await updateUser(db, data, id);
 
     if (!user) return c.json({ error: 'User not found' }, 404);
+    return c.json(user, 200);
+});
+
+userRouter.openapi(deleteUserRoute, async (c) => {
+    const { id } = c.req.valid('param');
+    const user = await deleteUser(db, id);
+
+    if (user.length === 0)
+        return c.json({ error: 'User not found' }, 404);
     return c.json(user, 200);
 });

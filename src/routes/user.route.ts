@@ -109,3 +109,25 @@ export const putUserRoute = createRoute({
         500: createErrorResponse('GENERIC', 'Internal server error'),
     },
 });
+
+export const deleteUserRoute = createRoute({
+    operationId: 'deleteUser',
+    tags: ['user'],
+    method: 'delete',
+    path: '/user/{id}',
+    request: {
+        params: IdUserPathSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                'application/json': {
+                    schema: UserSchema,
+                },
+            },
+            description: 'Deletes user with id',
+        },
+        400: createErrorResponse('UNION', 'Bad request error'),
+        500: createErrorResponse('GENERIC', 'Internal server error'),
+    },
+});
