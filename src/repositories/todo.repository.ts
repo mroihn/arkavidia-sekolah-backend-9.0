@@ -1,8 +1,23 @@
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import type { Database } from '../db/drizzle';
 import { todo } from '../db/schema/todo.schema';
-import type { PostTodoBodySchema, PutTodoBodySchema } from '../types/todo.type'
+import type { GetListTodoQuerySchema, PostTodoBodySchema, PutTodoBodySchema } from '../types/todo.type'
 import type { z } from 'zod';
+
+export const getListTodo = async (db: Database, q: z.infer<typeof GetListTodoQuerySchema>) => {
+	const userIdQ = q.userId
+		? eq(todo.authorId, q.userId)
+		: undefined;
+	const isCompletedQ = q.isCompleted ? eq(todo.isCompleted, q.isCompleted) : undefined;
+
+	const where = and(
+		userIdQ,
+		isCompletedQ
+	);
+	return await db.query.todo.findMany({
+		where
+	});
+};
 
 export const getTodoById = async (db: Database, id: string) => {
 	return await db.select().from(todo).where(eq(todo.id, id));

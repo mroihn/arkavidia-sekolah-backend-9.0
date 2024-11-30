@@ -1,8 +1,22 @@
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import type { Database } from '../db/drizzle';
 import { user } from '../db/schema/user.schema';
-import type { PostUserBodySchema, PutUserBodySchema } from '../types/user.type'
+import type { PostUserBodySchema, PutUserBodySchema, GetListUserQuerySchema } from '../types/user.type'
 import type { z } from 'zod';
+
+export const getListUser = async (db: Database, q: z.infer<typeof GetListUserQuerySchema>) => {
+    const userNameQ = q.name
+        ? eq(user.name, q.name)
+        : undefined;
+
+    const where = and(
+        userNameQ,
+    );
+    return await db.query.user.findMany({
+        where
+    });
+};
+
 
 export const getUserById = async (db: Database, id: string) => {
     return await db.select().from(user).where(eq(user.id, id));

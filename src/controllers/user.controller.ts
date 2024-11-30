@@ -1,9 +1,17 @@
 import { db } from '../db/drizzle';
-import { getUserById, insertUser, updateUser, deleteUser } from '../repositories/user.repository';
-import { getUserRoute, postUserRoute, putUserRoute, deleteUserRoute } from "../routes/user.route";
+import { getUserById, insertUser, updateUser, deleteUser, getListUser } from '../repositories/user.repository';
+import { getUserRoute, postUserRoute, putUserRoute, deleteUserRoute, getListUserRoute } from "../routes/user.route";
 import { createRouter } from '../utils/router-factory';
 
 export const userRouter = createRouter();
+
+userRouter.openapi(getListUserRoute, async (c) => {
+    const user = await getListUser(db, c.req.valid('query'));
+    return c.json({
+        user,
+    }, 200,
+    );
+});
 
 userRouter.openapi(getUserRoute, async (c) => {
     const { id } = c.req.valid('param');

@@ -1,4 +1,4 @@
-import { type createRoute, z } from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { todo } from '../db/schema/todo.schema';
 
@@ -11,14 +11,19 @@ export const ListTodoSchema = z.array(TodoSchema);
 
 /** RESPONSE SCHEMAS */
 export const GetListTodoQuerySchema = z.object({
-	isCompleted: z.boolean().openapi({
+	isCompleted: z.preprocess((val) => {
+		if (typeof val === 'string') {
+			return val === 'true';
+		}
+		return val;
+	}, z.boolean()).optional().openapi({
 		param: {
 			in: 'query',
 			example: true,
 			required: false,
 		},
 	}),
-	userId: z.string().openapi({
+	userId: z.string().optional().openapi({
 		param: {
 			in: 'query',
 			example: 'arpjv19i',
